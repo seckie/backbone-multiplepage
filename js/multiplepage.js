@@ -4,7 +4,7 @@
  * @author     Naoki Sekiguchi (RaNa gRam)
  * @url        https://github.com/seckie/Backbone-MultiplePage
  * @license    http://www.opensource.org/licenses/mit-license.html  MIT License
- * @requires   jQuery.js, Underscore.js, Backbone.js, jQuery.preload.js
+ * @requires   jQuery.js, Underscore.js, Backbone.js
  */
 
 (function($, _, Backbone, window, document) {
@@ -116,20 +116,8 @@ var Page = Backbone.Model.extend({
 
 var Pages = Backbone.Collection.extend({
 	model: Page,
-	options: {
-	},
-	initialize: function (options) {
-		var self = this,
-			opt = this.options;
-//        _.extend(this.options, options);
-//        _.extend(this.action, opt.action);
-	},
 	comparator: function (model) {
 		return parseInt(model.cid.slice(1), 10);
-	},
-	// interface functions that should be overridden
-	action: {
-		loadComplete: function () { },
 	}
 });
 
