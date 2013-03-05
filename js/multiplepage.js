@@ -12,7 +12,7 @@
 $.MultiplePage = function (options) {
 	this.options = {
 		urls: [],
-		adjacentRange: 2,
+		adjacentRange: 1,
 		action: {
 			loadStart: function () {},
 			loadComplete: function () {},
@@ -43,18 +43,23 @@ $.MultiplePage.prototype = {
 		var self = this;
 		var dfd = $.Deferred();
 		var model = this.collection.at(index);
-		model.fetch({
-			dataType: 'html',
-			success: function (model, response, options) {
-				dfd.resolve(model.get('title'), model.get('body'));
-				if (multiple != true) {
-					self.action.loadComplete.call(self); // action
+		if (model.has('body')) {
+			// this model is already loaded.
+			dfd.resolve(true); // "true" is dupulication state.
+		} else {
+			model.fetch({
+				dataType: 'html',
+				success: function (model, response, options) {
+					dfd.resolve();
+					if (multiple != true) {
+						self.action.loadComplete.call(self); // action
+					}
+				},
+				error: function (model, xhr, options) {
+					dfd.reject();
 				}
-			},
-			error: function (model, xhr, options) {
-				dfd.reject();
-			}
-		});
+			});
+		}
 		return dfd.promise();
 	},
 	multipleLoad: function (index) {
@@ -72,7 +77,8 @@ $.MultiplePage.prototype = {
 			}
 		});
 		$.when.apply(null, loadHolder).done(function () {
-			self.action.multipleLoadComplete.call(self, models); // action
+			// passing arguments to pass dupulication state
+			self.action.multipleLoadComplete.call(self, models, arguments); // action
 			dfd.resolve();
 		});
 		return dfd.promise();

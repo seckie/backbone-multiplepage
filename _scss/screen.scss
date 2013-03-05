@@ -46,6 +46,7 @@ a {
 	width: $mainwidth;
 	height: 100%;
 	margin: 0 auto;
+	padding: 160px 0 0;
 }
 .header {
 	position: fixed;
@@ -61,16 +62,13 @@ a {
 }
 .page {
 	position: relative;
-	height: 80%;
-	padding: 10% 0;
+	height: 480px;
+	margin: 40px 0;
+	background-color: #f1f1f1;
 	.inner {
-		width: 90%;
+		width: $mainwidth - 40px;
 		height: 100%;
-		padding: 0 5%;
-		background-color: #f1f1f1;
-	}
-	h1, h2 {
-		padding: 100px 0 20px;
+		margin: 0 20px;
 	}
 }
 

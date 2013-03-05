@@ -59,6 +59,7 @@ var pages = new $.MultiplePage({
 		'pages/9.html',
 		'pages/10.html'
 	],
+	adjacentRange: 1,
 	action: { // 'this' context === pages
 		loadStart: function () {
 			console.log('load start');
@@ -72,11 +73,14 @@ var pages = new $.MultiplePage({
 			console.log('multipleLoad start');
 			loading.show();
 		},
-		multipleLoadComplete: function (models) {
+		multipleLoadComplete: function (models, duplicationStates) {
 			var dfdHolder = [];
 			_.each(models, function (model, i) {
-				var dfd = loadPage(viewElements[model.get('index')], model.get('title'), model.get('body'));
-				dfdHolder.push(dfd);
+				if (duplicationStates[i] === true) { return; }
+				var index = model.get('index');
+				var title = model.get('title');
+				var body = model.get('body');
+				dfdHolder.push(loadPage(index, title, body));
 			});
 			$.when.apply(null, dfdHolder).done(function () {
 				console.log('multipleLoad complete');
@@ -86,8 +90,9 @@ var pages = new $.MultiplePage({
 	}
 });
 
-function loadPage ($el, title, body) {
+function loadPage (index, title, body) {
 	var dfd = $.Deferred();
+	var $el = viewElements[index];
 	document.title = title;
 	$el.css({
 		'visibility': 'hidden'
@@ -103,13 +108,14 @@ function loadPage ($el, title, body) {
 	return dfd.promise();
 }
 
-$('.nav a').on('click', function (i, el) {
+$('.nav a').on('click', function (e) {
 	var index = $(this).data('index');
 	pages.multipleLoad(index);
+	e.preventDefault();
 });
 
 // smooth scroll
-$('a[href^="#"]').smoothScroll();
+//$('a[href^="#"]').smoothScroll();
 
 });
 </script>
