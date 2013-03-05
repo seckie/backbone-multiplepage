@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="https://www.facebook.com/2008/fbml">
+<head>
+<meta charset="UTF-8" />
+<title>Backbone-MultiplePage</title>
+<meta name="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width" />
+<link rel="stylesheet" href="css/screen.css" />
+<script src="js/jquery-1.9.1.min.js"></script>
+<script src="js/underscore-min.js"></script>
+<script src="js/backbone.js"></script>
+<script src="js/multiplepage.js"></script>
+<script>
+$(function () {
+	
+var pages = new $.MultiplePage({
+	urls: [
+		'pages/1.html',
+		'pages/2.html',
+		'pages/3.html',
+		'pages/4.html',
+		'pages/5.html',
+		'pages/6.html',
+		'pages/7.html',
+		'pages/8.html',
+		'pages/9.html',
+		'pages/10.html'
+	],
+	action: {
+		loadComplete: function () {},
+	}
+});
+
+setTimeout(function () {
+pages.load(0).done(function (title, body) {
+	$('#page1>.inner').html(body);
+});
+pages.load(1);
+}, 1000);
+
+});
+</script>
+</head>
+<body>
+
+<div class="container">
+
+<div class="header">
+<h1>Backbone-MultiplePage</h1>
+<p><a href="https://github.com/seckie/Backbone-MultiplePage">source on github</a></p>
+<!--/.header--></div>
+
+<div class="page" id="page1">
+<div class="inner">
+<h2>page 1</h2>
+<!--/.inner--></div>
+<!--/.page--></div>
+<div class="page" id="page2">
+<div class="inner">
+<h2>page 2</h2>
+<!--/.inner--></div>
+<!--/.page--></div>
+<div class="page" id="page3">
+<div class="inner">
+<h2>page 3</h2>
+<!--/.inner--></div>
+<!--/.page--></div>
+<div class="page" id="page4">
+<div class="inner">
+<h2>page 4</h2>
+<!--/.inner--></div>
+<!--/.page--></div>
+<div class="page" id="page5">
+<div class="inner">
+<h2>page 5</h2>
+<!--/.inner--></div>
+<!--/.page--></div>
+<div class="page" id="page6">
+<div class="inner">
+<h2>page 6</h2>
+<!--/.inner--></div>
+<!--/.page--></div>
+<div class="page" id="page7">
+<div class="inner">
+<h2>page 7</h2>
+<!--/.inner--></div>
+<!--/.page--></div>
+<div class="page" id="page8">
+<div class="inner">
+<h2>page 8</h2>
+<!--/.inner--></div>
+<!--/.page--></div>
+<div class="page" id="page9">
+<div class="inner">
+<h2>page 9</h2>
+<!--/.inner--></div>
+<!--/.page--></div>
+<div class="page" id="page10">
+<div class="inner">
+<h2>page 10</h2>
+<!--/.inner--></div>
+<!--/.page--></div>
+
+<div class="nav">
+<div class="controll">
+<a href="#page1">1</a>
+<a href="#page2">2</a>
+<a href="#page3">3</a>
+<a href="#page4">4</a>
+<a href="#page5">5</a>
+<a href="#page6">6</a>
+<a href="#page7">7</a>
+<a href="#page8">8</a>
+<a href="#page9">9</a>
+<a href="#page10">10</a>
+</div>
+<!--/.nav--></div>
+
+<!--/.main-->
+<!--/.container--></div>
+</body>
+</html>
