@@ -9,10 +9,12 @@
 <script src="js/jquery-1.9.1.min.js"></script>
 <script src="js/underscore-min.js"></script>
 <script src="js/backbone.js"></script>
+<script src="js/jquery.preloadimg.js"></script>
 <script src="js/multiplepage.js"></script>
 <script>
 $(function () {
 	
+var loading = $('.loading');
 var pages = new $.MultiplePage({
 	urls: [
 		'pages/1.html',
@@ -26,17 +28,60 @@ var pages = new $.MultiplePage({
 		'pages/9.html',
 		'pages/10.html'
 	],
-	action: {
-		loadComplete: function () {},
+	action: { // 'this' context === pages
+		loadStart: function () {
+			console.log('load start');
+			loading.show();
+		},
+		loadComplete: function () {
+			console.log('load complete');
+			loading.hide();
+		},
+		multipleLoadStart: function () {
+			console.log('multipleLoad start');
+			loading.show();
+		},
+		multipleLoadComplete: function () {
+			console.log('multipleLoad complete');
+			loading.hide();
+		}
 	}
 });
 
-setTimeout(function () {
+var loadHolder = [];
+/*
 pages.load(0).done(function (title, body) {
-	$('#page1>.inner').html(body);
+	loadHolder.push(loadPage($('#page1>.inner'), title, body));
 });
-pages.load(1);
-}, 1000);
+pages.load(1).done(function (title, body) {
+	loadHolder.push(loadPage($('#page2>.inner'), title, body));
+});
+*/
+
+pages.multipleLoad(4).done(function (load) {
+	console.log('');
+});
+
+function loadPage ($el, title, body) {
+	var dfd = $.Deferred();
+	document.title = title;
+	$el.css({
+		'visibility': 'hidden'
+	}).html(body);
+	$el.preloadImg({
+		complete: function () {
+			$el.hide().css({
+				'visibility': ''
+			}).fadeIn();
+			dfd.resolve();
+		}
+	});
+	return dfd.promise();
+}
+
+$.when.apply(null, loadHolder).done(function () {
+	//console.log('2 pages are loaded.');
+});
 
 });
 </script>
@@ -118,5 +163,6 @@ pages.load(1);
 
 <!--/.main-->
 <!--/.container--></div>
+<div class="loading"> </div>
 </body>
 </html>

@@ -12,11 +12,16 @@
 $.MultiplePage = function (options) {
 	this.options = {
 		urls: [],
+		adjacentRange: 2,
 		action: {
-			loadComplete: function () {}
+			loadStart: function () {},
+			loadComplete: function () {},
+			multipleLoadStart: function () { },
+			multipleLoadComplete: function () { }
 		}
 	};
 	_.extend(this.options, options);
+	_.extend(this.action, options.action);
 	this.initialize();
 };
 $.MultiplePage.prototype = {
@@ -29,20 +34,62 @@ $.MultiplePage.prototype = {
 
 		this.collection = collection;
 	},
-	load: function (index) {
+	load: function (index, multiple) {
+		var self = this;
 		var dfd = $.Deferred();
 		var model = this.collection.at(index);
+		if (multiple != true) {
+			this.action.loadStart.call(this); // action
+		}
 		model.fetch({
 			dataType: 'html',
 			success: function (model, response, options) {
 				dfd.resolve(model.get('title'), model.get('body'));
+				if (multiple != true) {
+					self.action.loadComplete.call(self); // action
+				}
 			},
 			error: function (model, xhr, options) {
 				dfd.reject();
 			}
 		});
 		return dfd.promise();
-	}
+	},
+	multipleLoad: function (index) {
+		this.action.multipleLoadStart.call(this); // action
+		var self = this;
+		var dfd = $.Deferred();
+		var loadHolder = [];
+		var keys = this._keys(index);
+
+		_.each(keys, function (key, i) {
+			var model = self.collection.at(key);
+			if (typeof model === 'object') {
+				loadHolder.push(self.load(key, true));
+			}
+		});
+		
+		$.when.apply(null, loadHolder).done(function () {
+			self.action.multipleLoadComplete.call(self); // action
+			dfd.resolve();
+		});
+		return dfd.promise();
+	},
+	_keys: function (index) {
+		var keys = [index];
+		var range = this.options.adjacentRange;
+		for (var i=0; i<range; i++) {
+			keys.push(index + (-1 * (i + 1)));
+		}
+		for (var i=0; i<range; i++) {
+			keys.push(index + (i + 1));
+		}
+		keys = keys.sort(function (a, b) {
+			return a - b;
+		});
+		return keys;
+	},
+	action: { }
 };
 
 var Page = Backbone.Model.extend({
@@ -62,8 +109,6 @@ var Page = Backbone.Model.extend({
 var Pages = Backbone.Collection.extend({
 	model: Page,
 	options: {
-		urls: [ ],
-		adjacentLength: 1
 	},
 	initialize: function (options) {
 		var self = this,
