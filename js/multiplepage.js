@@ -29,18 +29,20 @@ $.MultiplePage.prototype = {
 		var collection = new Pages();
 		collection.url = 'pages';
 		_.each(this.options.urls, function (url, i) {
-			collection.add({ id: (i + 1) + '.html' });
+			collection.add({
+				id: (i + 1) + '.html',
+				index: i
+			});
 		});
-
 		this.collection = collection;
 	},
 	load: function (index, multiple) {
-		var self = this;
-		var dfd = $.Deferred();
-		var model = this.collection.at(index);
 		if (multiple != true) {
 			this.action.loadStart.call(this); // action
 		}
+		var self = this;
+		var dfd = $.Deferred();
+		var model = this.collection.at(index);
 		model.fetch({
 			dataType: 'html',
 			success: function (model, response, options) {
@@ -59,18 +61,18 @@ $.MultiplePage.prototype = {
 		this.action.multipleLoadStart.call(this); // action
 		var self = this;
 		var dfd = $.Deferred();
-		var loadHolder = [];
 		var keys = this._keys(index);
-
+		var loadHolder = [];
+		var models = [];
 		_.each(keys, function (key, i) {
 			var model = self.collection.at(key);
 			if (typeof model === 'object') {
 				loadHolder.push(self.load(key, true));
+				models.push(model);
 			}
 		});
-		
 		$.when.apply(null, loadHolder).done(function () {
-			self.action.multipleLoadComplete.call(self); // action
+			self.action.multipleLoadComplete.call(self, models); // action
 			dfd.resolve();
 		});
 		return dfd.promise();

@@ -12,9 +12,40 @@
 <script src="js/jquery.preloadimg.js"></script>
 <script src="js/multiplepage.js"></script>
 <script>
+
+// scroll to inside page link
+$.fn.smoothScroll = function() {
+	this.each(function() {
+		$(this).on("click", function(e) {
+			var href = $(this).attr('href');
+			if (href.slice(-1) === '#') {
+				return false;
+			}
+			var targetOffset = Math.floor($(href).offset().top);
+			if (typeof targetOffset === 'number') {
+				$('html,body').animate({'scrollTop': targetOffset}, 'swing');
+			}
+			e.preventDefault();
+		});
+	});
+}
+
 $(function () {
 	
 var loading = $('.loading');
+var viewElements = [
+	$('#page1>.inner'),
+	$('#page2>.inner'),
+	$('#page3>.inner'),
+	$('#page4>.inner'),
+	$('#page5>.inner'),
+	$('#page6>.inner'),
+	$('#page7>.inner'),
+	$('#page8>.inner'),
+	$('#page9>.inner'),
+	$('#page10>.inner')
+];
+
 var pages = new $.MultiplePage({
 	urls: [
 		'pages/1.html',
@@ -41,25 +72,18 @@ var pages = new $.MultiplePage({
 			console.log('multipleLoad start');
 			loading.show();
 		},
-		multipleLoadComplete: function () {
-			console.log('multipleLoad complete');
-			loading.hide();
+		multipleLoadComplete: function (models) {
+			var dfdHolder = [];
+			_.each(models, function (model, i) {
+				var dfd = loadPage(viewElements[model.get('index')], model.get('title'), model.get('body'));
+				dfdHolder.push(dfd);
+			});
+			$.when.apply(null, dfdHolder).done(function () {
+				console.log('multipleLoad complete');
+				loading.hide();
+			});
 		}
 	}
-});
-
-var loadHolder = [];
-/*
-pages.load(0).done(function (title, body) {
-	loadHolder.push(loadPage($('#page1>.inner'), title, body));
-});
-pages.load(1).done(function (title, body) {
-	loadHolder.push(loadPage($('#page2>.inner'), title, body));
-});
-*/
-
-pages.multipleLoad(4).done(function (load) {
-	console.log('');
 });
 
 function loadPage ($el, title, body) {
@@ -79,9 +103,13 @@ function loadPage ($el, title, body) {
 	return dfd.promise();
 }
 
-$.when.apply(null, loadHolder).done(function () {
-	//console.log('2 pages are loaded.');
+$('.nav a').on('click', function (i, el) {
+	var index = $(this).data('index');
+	pages.multipleLoad(index);
 });
+
+// smooth scroll
+$('a[href^="#"]').smoothScroll();
 
 });
 </script>
@@ -148,16 +176,16 @@ $.when.apply(null, loadHolder).done(function () {
 
 <div class="nav">
 <div class="controll">
-<a href="#page1">1</a>
-<a href="#page2">2</a>
-<a href="#page3">3</a>
-<a href="#page4">4</a>
-<a href="#page5">5</a>
-<a href="#page6">6</a>
-<a href="#page7">7</a>
-<a href="#page8">8</a>
-<a href="#page9">9</a>
-<a href="#page10">10</a>
+<a href="#page1" data-index="0">1</a>
+<a href="#page2" data-index="1">2</a>
+<a href="#page3" data-index="2">3</a>
+<a href="#page4" data-index="3">4</a>
+<a href="#page5" data-index="4">5</a>
+<a href="#page6" data-index="5">6</a>
+<a href="#page7" data-index="6">7</a>
+<a href="#page8" data-index="7">8</a>
+<a href="#page9" data-index="8">9</a>
+<a href="#page10" data-index="9">10</a>
 </div>
 <!--/.nav--></div>
 
