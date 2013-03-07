@@ -2,7 +2,7 @@
  * $.MultiplePage
  *
  * @author     Naoki Sekiguchi (RaNa gRam)
- * @url        https://github.com/seckie/Backbone-MultiplePage
+ * @url        https://github.com/seckie/backbone-multiplepage
  * @license    http://www.opensource.org/licenses/mit-license.html  MIT License
  * @requires   jQuery.js, Underscore.js, Backbone.js
  */

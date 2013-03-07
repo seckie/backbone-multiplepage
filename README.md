@@ -1,7 +1,7 @@
-# Backbone-MultiplePage
+# backbone-multiplepage
 
 Multiple page loading system on Backbone.Collection
 
 See demo:
 
-- http://seckie.github.com/Backbone-MultiplePage/
+- http://seckie.github.com/backbone-multiplepage/
