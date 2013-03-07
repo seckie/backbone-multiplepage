@@ -10,10 +10,13 @@
 (function($, _, Backbone, window, document) {
 
 $.MultiplePage = function (options) {
-	this.options = {
+	this.options = { // default
 		baseUrl: 'pages',
 		urls: [],
 		adjacentRange: 1,
+		parseBody: function (res) {
+			return res;
+		},
 		action: {
 			loadStart: function () {},
 			loadComplete: function () {},
@@ -51,6 +54,7 @@ $.MultiplePage.prototype = {
 			model.fetch({
 				dataType: 'html',
 				success: function (model, response, options) {
+					model.set('body', self.options.parseBody(model.get('body')));
 					dfd.resolve();
 					if (multiple != true) {
 						self.action.loadComplete.call(self); // action
