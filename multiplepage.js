@@ -11,6 +11,7 @@
 
 $.MultiplePage = function (options) {
 	this.options = {
+		baseUrl: 'pages',
 		urls: [],
 		adjacentRange: 1,
 		action: {
@@ -27,10 +28,10 @@ $.MultiplePage = function (options) {
 $.MultiplePage.prototype = {
 	initialize: function () {
 		var collection = new Pages();
-		collection.url = 'pages';
+		collection.url = this.options.baseUrl;
 		_.each(this.options.urls, function (url, i) {
 			collection.add({
-				id: (i + 1) + '.html',
+				id: url,
 				index: i
 			});
 		});

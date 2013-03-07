@@ -47,17 +47,18 @@ var viewElements = [
 ];
 
 var pages = new $.MultiplePage({
+	baseUrl: 'pages',
 	urls: [
-		'pages/1.html',
-		'pages/2.html',
-		'pages/3.html',
-		'pages/4.html',
-		'pages/5.html',
-		'pages/6.html',
-		'pages/7.html',
-		'pages/8.html',
-		'pages/9.html',
-		'pages/10.html'
+		'1.html',
+		'2.html',
+		'3.html',
+		'4.html',
+		'5.html',
+		'6.html',
+		'7.html',
+		'8.html',
+		'9.html',
+		'10.html'
 	],
 	adjacentRange: 1,
 	action: { // 'this' context === pages
