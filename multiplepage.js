@@ -41,27 +41,28 @@ $.MultiplePage.prototype = {
 		this.collection = collection;
 	},
 	load: function (index, multiple) {
-		if (multiple != true) {
-			this.action.loadStart.call(this); // action
-		}
 		var self = this;
 		var dfd = $.Deferred();
 		var model = this.collection.at(index);
 		if (model.has('body')) {
 			// this model is already loaded.
 			if (multiple != true) {
+				this.action.loadStart.call(this, model, true); // action
 				this.action.loadComplete.call(this, model, true); // action
 			}
 			dfd.resolve(true); // "true" is dupulication state.
 		} else {
+			if (multiple != true) {
+				this.action.loadStart.call(this, model); // action
+			}
 			model.fetch({
 				dataType: 'html',
 				success: function (model, response, options) {
 					model.set('body', self.options.parseBody(model.get('body')));
-					dfd.resolve();
 					if (multiple != true) {
 						self.action.loadComplete.call(self, model); // action
 					}
+					dfd.resolve();
 				},
 				error: function (model, xhr, options) {
 					dfd.reject();

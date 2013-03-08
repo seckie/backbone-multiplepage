@@ -46,7 +46,7 @@ var viewElements = [
 	$('#page10>.inner')
 ];
 
-var pages = new $.MultiplePage({
+window.pages = new $.MultiplePage({
 	baseUrl: 'pages',
 	urls: [
 		'1.html',
@@ -62,7 +62,7 @@ var pages = new $.MultiplePage({
 	],
 	adjacentRange: 1,
 	action: { // 'this' context === pages
-		loadStart: function () {
+		loadStart: function (model, duplicationState) {
 			console.log('load start');
 			loading.show();
 		},
