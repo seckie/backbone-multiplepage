@@ -49,6 +49,9 @@ $.MultiplePage.prototype = {
 		var model = this.collection.at(index);
 		if (model.has('body')) {
 			// this model is already loaded.
+			if (multiple != true) {
+				this.action.loadComplete.call(this, model, true); // action
+			}
 			dfd.resolve(true); // "true" is dupulication state.
 		} else {
 			model.fetch({
@@ -57,7 +60,7 @@ $.MultiplePage.prototype = {
 					model.set('body', self.options.parseBody(model.get('body')));
 					dfd.resolve();
 					if (multiple != true) {
-						self.action.loadComplete.call(self); // action
+						self.action.loadComplete.call(self, model); // action
 					}
 				},
 				error: function (model, xhr, options) {
@@ -81,8 +84,8 @@ $.MultiplePage.prototype = {
 				models.push(model);
 			}
 		});
-		$.when.apply(null, loadHolder).done(function () {
-			// passing arguments to pass dupulication state
+		$.when.apply(null, loadHolder).done(function (/* [ duplication states ] */) {
+			// passing arguments to pass duplication state
 			self.action.multipleLoadComplete.call(self, models, arguments); // action
 			dfd.resolve();
 		});
