@@ -25,6 +25,7 @@ $.MultiplePage = function (options) {
 		}
 	};
 	_.extend(this.options, options);
+	this.action = {};
 	_.extend(this.action, options.action);
 	this.initialize();
 };
@@ -105,8 +106,7 @@ $.MultiplePage.prototype = {
 			return a - b;
 		});
 		return keys;
-	},
-	action: { }
+	}
 };
 
 var Page = Backbone.Model.extend({
